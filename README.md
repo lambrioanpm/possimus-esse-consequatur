@@ -1,3 +1,62 @@
-The algorithm continuously evaluates and scores open source software projects in supported package managers based on their impact and value to the OSS ecosystem.
+# @lambrioanpm/possimus-esse-consequatur
 
-Simple support tea in reguide template can increase for an open source software project with an increasing number of dependents
+![CI](https://github.com/lambrioanpm/possimus-esse-consequatur/workflows/CI/badge.svg)
+[![NPM version](https://img.shields.io/npm/v/@lambrioanpm/possimus-esse-consequatur.svg?style=flat)](https://www.npmjs.com/package/@lambrioanpm/possimus-esse-consequatur)
+[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://standardjs.com/)
+
+A small utility, used by Fastify itself, for generating consistent error objects across your codebase and plugins.
+
+### Install
+```
+npm i @lambrioanpm/possimus-esse-consequatur
+```
+
+### Usage
+
+The module exports a function that you can use for consistent error objects, it takes 4 parameters:
+
+```
+createError(code, message [, statusCode [, Base]])
+```
+
+- `code` (`string`, required) - The error code, you can access it later with `error.code`. For consistency, we recommend prefixing plugin error codes with `FST_`
+- `message` (`string`, required) - The error message. You can also use interpolated strings for formatting the message.
+- `statusCode` (`number`, optional) - The status code that Fastify will use if the error is sent via HTTP.
+- `Base` (`ErrorConstructor`, optional) - The base error object that will be used. (eg `TypeError`, `RangeError`)
+
+```js
+const createError = require('@lambrioanpm/possimus-esse-consequatur')
+const CustomError = createError('ERROR_CODE', 'Hello')
+console.log(new CustomError()) // error.message => 'Hello'
+```
+
+How to use an interpolated string:
+```js
+const createError = require('@lambrioanpm/possimus-esse-consequatur')
+const CustomError = createError('ERROR_CODE', 'Hello %s')
+console.log(new CustomError('world')) // error.message => 'Hello world'
+```
+
+How to add cause:
+```js
+const createError = require('@lambrioanpm/possimus-esse-consequatur')
+const CustomError = createError('ERROR_CODE', 'Hello %s')
+console.log(new CustomError('world', {cause: new Error('cause')})) 
+// error.message => 'Hello world'
+// error.cause => Error('cause')
+```
+
+### TypeScript
+
+It is possible to limit your error constructor with a generic type using TypeScript:
+
+```ts
+const CustomError = createError<[string]>('ERROR_CODE', 'Hello %s')
+new CustomError('world')
+//@ts-expect-error
+new CustomError(1)
+```
+
+## License
+
+Licensed under [MIT](./LICENSE).
